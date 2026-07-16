@@ -39,7 +39,7 @@ doc-insight-mvp/
 ├── settings.gradle.kts
 ├── gradlew
 ├── gradlew.bat
-└── READ.md
+└── README.md
 ```
 
 ## 실행 전 확인
@@ -122,9 +122,9 @@ Git 저장소를 분석하려면 먼저 로컬에 Clone한 뒤 해당 경로를 
 
 포함 정보:
 
-- Java 파일 수
+- Java 파일/타입 수
 - 패키지명
-- 클래스명
+- 클래스/인터페이스/Enum 정보
 - 클래스 Annotation
 - 주요 메서드
 - 설정 파일 Key
@@ -138,8 +138,11 @@ Controller에서 추출한 API 목록입니다.
 
 - Controller 클래스
 - Java 메서드명
-- HTTP Method
-- API Path
+- HTTP Method (`@RequestMapping(method = ...)` 포함)
+- API Path (`path`/`value` 배열 조합 지원)
+- RequestBody / Response 타입
+- PathVariable / RequestParam 이름
+- 소스 파일 경로
 
 ### `onboarding-prompt.md`
 
@@ -177,9 +180,7 @@ cat outputs/project-summary.json | python3 -m json.tool
 ## 현재 제한 사항
 
 - 로컬 폴더만 분석 가능
-- `@RequestMapping(method = RequestMethod.GET)` 분석은 보완 필요
-- Java 파일 내 첫 번째 클래스 중심으로 분석
-- 복잡한 동적 URL 조합은 정확도가 낮을 수 있음
+- 상수/변수로 조합된 동적 URL은 정확도가 낮을 수 있음
 - 설정 파일은 값이 아닌 Key 중심으로 수집
 - AI API 직접 연동은 미구현
 - DB 저장 및 RAG 기능은 미구현
@@ -187,9 +188,8 @@ cat outputs/project-summary.json | python3 -m json.tool
 ## 개발 예정 항목
 
 - Git URL 입력 및 자동 Clone
-- Java 분석 정확도 개선
-- API Parameter 및 응답 타입 분석
-- 환경설정 분석 고도화
+- 응답 타입 제네릭/래퍼 분석 고도화
+- 환경설정 값 마스킹 및 프로파일별 비교
 - AI API 연동
 - 온보딩 문서 자동 생성
 - 분석 결과 DB 저장

@@ -41,7 +41,7 @@ public class RepositoryScanner {
                 || fileName.equals("settings.gradle")
                 || fileName.equals("settings.gradle.kts")
                 || fileName.equalsIgnoreCase("README.md")
-                || pathText.contains("/docs/") && fileName.endsWith(".md");
+                || (pathText.contains("/docs/") && fileName.endsWith(".md"));
     }
 
     private boolean isNotExcluded(Path path) {

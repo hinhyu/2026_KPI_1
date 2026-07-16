@@ -54,6 +54,11 @@ public class DocInsightRunner implements ApplicationRunner {
         }
 
         Path root = Path.of(args.getOptionValues("repoPath").getFirst()).toAbsolutePath().normalize();
+        if (!Files.isDirectory(root)) {
+            System.err.println("repoPath is not a directory: " + root);
+            return;
+        }
+
         Path outputDir = Path.of(args.getOptionValues("outputDir") == null ? "outputs" : args.getOptionValues("outputDir").getFirst());
         Files.createDirectories(outputDir);
 
@@ -67,7 +72,7 @@ public class DocInsightRunner implements ApplicationRunner {
             String fileName = file.getFileName().toString();
             if (fileName.endsWith(".java")) {
                 try {
-                    classes.add(javaAnalyzer.analyze(root, file));
+                    classes.addAll(javaAnalyzer.analyze(root, file));
                     endpoints.addAll(endpointExtractor.extract(root, file));
                 } catch (Exception e) {
                     System.out.println("[WARN] Java parse skipped: " + root.relativize(file) + " / " + e.getMessage());
@@ -87,16 +92,20 @@ public class DocInsightRunner implements ApplicationRunner {
 
         objectMapper.writeValue(summaryPath.toFile(), summary);
         objectMapper.writeValue(endpointPath.toFile(), endpoints);
-        Files.writeString(promptPath, buildPrompt(summary));
+        Files.writeString(promptPath, buildPrompt(summary, endpoints));
 
         System.out.println("Done.");
+        System.out.println("- scanned files: " + files.size());
+        System.out.println("- java types: " + classes.size());
+        System.out.println("- api endpoints: " + endpoints.size());
         System.out.println("- " + summaryPath.toAbsolutePath());
         System.out.println("- " + endpointPath.toAbsolutePath());
         System.out.println("- " + promptPath.toAbsolutePath());
     }
 
-    private String buildPrompt(ProjectSummary summary) throws Exception {
-        String json = objectMapper.writeValueAsString(summary);
+    private String buildPrompt(ProjectSummary summary, List<ApiEndpointInfo> endpoints) throws Exception {
+        String summaryJson = objectMapper.writeValueAsString(summary);
+        String endpointsJson = objectMapper.writeValueAsString(endpoints);
         return """
                 너는 Java Spring Boot 프로젝트 온보딩 문서를 작성하는 개발 리더다.
 
@@ -106,7 +115,7 @@ public class DocInsightRunner implements ApplicationRunner {
                 - 추측하지 말 것
                 - JSON에 없는 정보는 \"확인 필요\"로 표시할 것
                 - 기술 스택, 실행 방법, 주요 패키지, 주요 API, 설정 파일, 개발 시 주의사항을 포함할 것
-                - API 목록은 표로 작성할 것
+                - API 목록은 표로 작성하고 HTTP Method, Path, Handler, Request/Response, PathVariable, RequestParam을 포함할 것
                 - 문서는 실무 개발자가 바로 읽을 수 있게 간결하게 작성할 것
 
                 문서 목차:
@@ -120,10 +129,15 @@ public class DocInsightRunner implements ApplicationRunner {
                 8. 신규 개발자 주의사항
                 9. 확인 필요 항목
 
-                프로젝트 분석 JSON:
+                프로젝트 요약 JSON:
                 ```json
                 %s
                 ```
-                """.formatted(json);
+
+                API 엔드포인트 JSON:
+                ```json
+                %s
+                ```
+                """.formatted(summaryJson, endpointsJson);
     }
 }

@@ -31,7 +31,9 @@ public class SummaryBuilder {
                 .toList();
 
         List<JavaClassInfo> importantClasses = classes.stream()
-                .filter(c -> List.of("CONTROLLER", "SERVICE", "REPOSITORY", "ENTITY", "CONFIG").contains(c.layerType()))
+                .filter(c -> List.of(
+                        "CONTROLLER", "SERVICE", "REPOSITORY", "ENTITY", "CONFIG", "COMPONENT", "INTERFACE"
+                ).contains(c.layerType()))
                 .limit(200)
                 .toList();
 

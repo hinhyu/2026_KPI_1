@@ -12,10 +12,6 @@ java {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
-//
-//repositories {
-//    mavenCentral()
-//}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
