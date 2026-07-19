@@ -14,6 +14,7 @@ public class SummaryBuilder {
 
     public ProjectSummary build(
             Path root,
+            BuildInfo buildInfo,
             List<JavaClassInfo> classes,
             List<ApiEndpointInfo> endpoints,
             Map<String, List<String>> configKeysByFile,
@@ -39,6 +40,7 @@ public class SummaryBuilder {
 
         return new ProjectSummary(
                 root.getFileName().toString(),
+                buildInfo,
                 layerCounts,
                 packages,
                 importantClasses,

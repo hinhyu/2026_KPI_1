@@ -8,6 +8,7 @@ import java.util.Map;
 
 public record ProjectSummary(
         String projectName,
+        BuildInfo buildInfo,
         Map<String, Long> layerCounts,
         List<String> packages,
         List<JavaClassInfo> importantClasses,

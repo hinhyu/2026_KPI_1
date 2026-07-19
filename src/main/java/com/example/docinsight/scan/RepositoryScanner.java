@@ -40,6 +40,7 @@ public class RepositoryScanner {
                 || fileName.equals("build.gradle.kts")
                 || fileName.equals("settings.gradle")
                 || fileName.equals("settings.gradle.kts")
+                || fileName.equals("pom.xml")
                 || fileName.equalsIgnoreCase("README.md")
                 || (pathText.contains("/docs/") && fileName.endsWith(".md"));
     }

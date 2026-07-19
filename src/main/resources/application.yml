@@ -1,2 +1,28 @@
 doc-insight:
   output-dir: outputs
+  ai:
+    # 실제 호출 없이 프롬프트만 생성하려면 false
+    enabled: true
+    usd-to-krw: 1500
+    monthly-budget-krw: 120000
+    timeout-seconds: 60
+
+    # 작업 → 모델 라우팅 오버라이드 (비우면 AiTask 기본 모델 사용).
+    # 예) 온보딩 초안을 저비용 Gemini로 보내려면 GEMINI_API_KEY 설정 후 아래 주석 해제:
+    # routing:
+    #   ONBOARDING_DRAFT: GEMINI_FLASH_LITE
+    #   API_GUIDE_DRAFT: GEMINI_FLASH_LITE
+    #   CONFIG_GUIDE_DRAFT: GEMINI_FLASH_LITE
+
+    openai:
+      # 환경변수 주입 권장. 비어 있으면 dry-run으로 동작한다.
+      api-key: ${OPENAI_API_KEY:}
+      # OpenAI 호환 게이트웨이(Cursor 등)는 base-url만 교체
+      base-url: https://api.openai.com/v1
+      chat-model: gpt-4o-mini
+
+    gemini:
+      # Google AI Studio 발급 키. 비어 있으면 Gemini 경로는 dry-run으로 동작한다.
+      api-key: ${GEMINI_API_KEY:}
+      base-url: https://generativelanguage.googleapis.com/v1beta
+      model: gemini-2.5-flash-lite
